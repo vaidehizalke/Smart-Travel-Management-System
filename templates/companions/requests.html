@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Requests{% endblock %}
+{% block content %}
+<h1>Connection requests</h1>
+<h2>Waiting for your answer</h2>
+{% if incoming %}
+<table><thead><tr><th>From</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for r in incoming %}<tr><td>{{ r.sender_name }}</td><td>{{ r.status }}</td><td>
+  <form method="post" action="{{ url_for('m2.respond', req_id=r.id) }}" class="inline">
+    <button name="action" value="accept" type="submit">Accept</button>
+    <button name="action" value="reject" type="submit" class="secondary">Reject</button></form></td></tr>{% endfor %}
+</tbody></table>
+{% else %}<p>No pending requests.</p>{% endif %}
+<h2>Requests you sent</h2>
+{% if sent %}
+<table><thead><tr><th>To</th><th>Status</th></tr></thead><tbody>
+{% for r in sent %}<tr><td>{{ r.receiver_name }}</td><td>{{ r.status }}</td></tr>{% endfor %}</tbody></table>
+{% else %}<p>You have not sent any requests. <a href="{{ url_for('m2.matches') }}">Find companions</a></p>{% endif %}
+<h2>Connections</h2>
+{% if connections %}
+<table><thead><tr><th>Companion</th><th>Chat</th></tr></thead><tbody>
+{% for r in connections %}<tr><td>{{ r.receiver_name if r.sender_id == me.id else r.sender_name }}</td>
+  <td><a href="{{ url_for('m2.chat', req_id=r.id) }}">Open chat</a></td></tr>{% endfor %}</tbody></table>
+{% else %}<p>No accepted connections yet. Chat unlocks after a request is accepted.</p>{% endif %}
+{% endblock %}

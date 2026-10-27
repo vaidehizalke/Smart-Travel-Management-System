@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Itinerary{% endblock %}
+{% block content %}
+{% if pref %}
+<h1>{{ pref.destination }}: {{ pref.start_date }} to {{ pref.end_date }}</h1>
+<p>{{ pref.travelers }} traveler(s), budget Rs. {{ '%.0f'|format(pref.budget) }}, interests: {{ pref.interests }}</p>
+{% endif %}
+{% if message %}<p class="notice err">{{ message }}</p>{% endif %}
+{% if days %}
+  {% if over %}<p class="notice warn">Estimated cost Rs. {{ '%.0f'|format(it.estimated_cost) }} is above your budget of Rs. {{ '%.0f'|format(pref.budget) }}. Consider fewer days or cheaper interests.</p>
+  {% else %}<p class="notice ok">Estimated activity cost Rs. {{ '%.0f'|format(it.estimated_cost) }}, within your budget.</p>{% endif %}
+  <table>
+    <thead><tr><th>Day</th><th>Activity</th><th>Cost (Rs.)</th></tr></thead>
+    <tbody>{% for d in days %}<tr><td>Day {{ d.day_number }}</td><td>{{ d.activity }}</td><td>{{ '%.0f'|format(d.cost) }}</td></tr>{% endfor %}</tbody>
+  </table>
+{% endif %}
+{% if pref %}
+<p>
+  <a class="btn" href="{{ url_for('search', destination=pref.destination, date=pref.start_date) }}">Find flights and hotels</a>
+  <a class="btn" href="{{ url_for('m1b.cart', pref_id=pref.id) }}">View cart</a>
+  <a class="btn" href="{{ url_for('m1b.edit_trip', pid=pref.id) }}">Edit trip</a>
+  <a class="btn" href="{{ url_for('m1b.trips') }}">My trips</a>
+</p>
+{% endif %}
+{% endblock %}

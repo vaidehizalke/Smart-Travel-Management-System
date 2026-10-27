@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Travel preferences{% endblock %}
+{% block content %}
+<h1>Tell us about your trip</h1>
+{% if errors %}<div class="notice err"><strong>Please fix the following:</strong>
+<ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>{% endif %}
+<form method="post" action="{{ url_for('save_preferences') }}" class="card">
+  <label>Destination
+    <select name="destination">
+      <option value="">Choose a destination</option>
+      {% for d in destinations %}<option {{ 'selected' if form.get('destination') == d }}>{{ d }}</option>{% endfor %}
+    </select></label>
+  <div class="row">
+    <label>Start date <input type="date" name="start_date" value="{{ form.get('start_date','') }}"></label>
+    <label>End date <input type="date" name="end_date" value="{{ form.get('end_date','') }}"></label>
+  </div>
+  <div class="row">
+    <label>Budget (Rs.) <input type="text" name="budget" value="{{ form.get('budget','') }}"></label>
+    <label>Number of travelers <input type="text" name="travelers" value="{{ form.get('travelers','') }}"></label>
+  </div>
+  <fieldset><legend>Interests</legend>
+    {% for i in interests %}
+    <label class="check"><input type="checkbox" name="interests" value="{{ i }}"
+      {{ 'checked' if i in form.get('interests', []) }}> {{ i|capitalize }}</label>
+    {% endfor %}
+  </fieldset>
+  <button type="submit">Save and build itinerary</button>
+</form>
+{% endblock %}

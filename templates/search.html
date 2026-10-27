@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Flights and hotels{% endblock %}
+{% block content %}
+<h1>Search flights and hotels</h1>
+<form method="get" class="card row">
+  <label>Destination
+    <select name="destination">
+      <option value="">Choose a destination</option>
+      {% for d in destinations %}<option {{ 'selected' if dest|lower == d|lower }}>{{ d }}</option>{% endfor %}
+    </select></label>
+  <label>Travel date <input type="date" name="date" value="{{ date }}"></label>
+  <label>Sort by price
+    <select name="sort">
+      <option value="price_asc" {{ 'selected' if sort=='price_asc' }}>Low to high</option>
+      <option value="price_desc" {{ 'selected' if sort=='price_desc' }}>High to low</option>
+    </select></label>
+  <button type="submit">Search</button>
+</form>
+{% if errors %}<div class="notice err"><ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>{% endif %}
+{% if dest and not errors %}
+{% set ns = namespace(n=0) %}
+{% for t in all_trips %}{% if t.destination|lower == dest|lower %}{% set ns.n = ns.n + 1 %}{% endif %}{% endfor %}
+<form method="post" action="{{ url_for('m1b.add_to_cart') }}">
+  {% if ns.n %}
+  <p><label>Add items to trip
+    <select name="pref_id">{% for t in all_trips %}{% if t.destination|lower == dest|lower %}<option value="{{ t.id }}">{{ t.destination }}: {{ t.start_date }} to {{ t.end_date }}</option>{% endif %}{% endfor %}</select></label></p>
+  {% else %}
+  <p class="notice warn">Save a trip to {{ dest }} first to add items to a cart. <a href="{{ url_for('index') }}">Plan a trip</a></p>
+  {% endif %}
+  <h2>Flights to {{ dest }}</h2>
+  {% if flights %}
+  <table><thead><tr><th>Airline</th><th>From</th><th>Date</th><th>Departs</th><th>Price (Rs.)</th><th></th></tr></thead>
+  <tbody>{% for f in flights %}<tr><td>{{ f.airline }}</td><td>{{ f.origin }}</td><td>{{ f.date }}</td><td>{{ f.departure }}</td><td>{{ '%.0f'|format(f.price) }}</td>
+    <td>{% if ns.n %}<button type="submit" name="item" value="flight:{{ f.id }}">Add to cart</button>{% endif %}</td></tr>{% endfor %}</tbody></table>
+  {% else %}<p class="notice warn">No results found for flights.</p>{% endif %}
+  <h2>Hotels in {{ dest }}</h2>
+  {% if hotels %}
+  <table><thead><tr><th>Hotel</th><th>Rating</th><th>Price per night (Rs.)</th><th></th></tr></thead>
+  <tbody>{% for h in hotels %}<tr><td>{{ h.name }}</td><td>{{ h.rating }}</td><td>{{ '%.0f'|format(h.price_per_night) }}</td>
+    <td>{% if ns.n %}<button type="submit" name="item" value="hotel:{{ h.id }}">Add to cart</button>{% endif %}</td></tr>{% endfor %}</tbody></table>
+  {% else %}<p class="notice warn">No results found for hotels.</p>{% endif %}
+</form>
+{% endif %}
+{% endblock %}

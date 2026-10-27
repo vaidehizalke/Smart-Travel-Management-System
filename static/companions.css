@@ -1,0 +1,10 @@
+.who{margin-left:18px;font-family:system-ui,sans-serif;font-size:.9rem}
+.score{display:inline-block;min-width:3.2em;text-align:center;padding:2px 8px;border-radius:4px;background:var(--sea);color:#fff;font-family:system-ui,sans-serif}
+.inline{display:inline}.inline button{padding:6px 12px;font-size:.9rem}
+button.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.chatbox{background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px;display:grid;gap:8px;max-height:420px;overflow-y:auto}
+.msg{max-width:80%;padding:8px 12px;border-radius:6px;background:var(--sand);font-family:system-ui,sans-serif}
+.msg.mine{justify-self:end;background:#d6ebe9}
+.msg small{display:block;color:#5a6a68}
+textarea{padding:8px;border:1px solid var(--line);border-radius:4px;font-size:1rem;font-family:system-ui,sans-serif;width:100%}
+h2{margin-top:1.4em}

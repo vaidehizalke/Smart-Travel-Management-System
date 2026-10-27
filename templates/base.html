@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Smart Travel Management System{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='companions.css') }}">
+</head>
+<body>
+<header>
+  <a class="brand" href="{{ url_for('index') }}">Smart Travel Management System</a>
+  <nav>
+    <a href="{{ url_for('index') }}">Plan a trip</a>
+    <a href="{{ url_for('m1b.trips') }}">My trips</a>
+    <a href="{{ url_for('search') }}">Flights and hotels</a>
+    <a href="{{ url_for('m2.matches') }}">Companions</a>
+    <a href="{{ url_for('m2.requests_page') }}">Requests</a>
+    {% if current_profile %}<span class="who">Signed in as {{ current_profile.name }} (<a href="{{ url_for('m2.switch') }}">switch</a>)</span>{% endif %}
+  </nav>
+</header>
+<main>
+{% for cat, m in get_flashed_messages(with_categories=true) %}<p class="notice {{ 'err' if cat == 'error' else 'ok' }}">{{ m }}</p>{% endfor %}
+{% block content %}{% endblock %}
+</main>
+</body>
+</html>

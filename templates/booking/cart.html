@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+<h1>Cart for {{ trip.destination }}</h1>
+<p>{{ trip.start_date }} to {{ trip.end_date }}, {{ trip.travelers }} traveler(s), {{ nights }} night(s), {{ rooms }} room(s).
+Flights are charged per traveler. Hotels are charged per room per night.</p>
+{% if items %}
+<table>
+  <thead><tr><th>Type</th><th>Item</th><th>Details</th><th>Price (Rs.)</th><th>Qty</th><th>Line total (Rs.)</th><th></th></tr></thead>
+  <tbody>
+  {% for i in items %}<tr><td>{{ i.item_type|capitalize }}</td><td>{{ i.name }}</td><td>{{ i.details }}</td>
+    <td>{{ '%.0f'|format(i.unit_price) }}</td><td>{{ i.quantity }}</td><td>{{ '%.0f'|format(i.line_total) }}</td>
+    <td><form method="post" action="{{ url_for('m1b.remove_from_cart', pref_id=trip.id, cart_id=i.id) }}" class="inline"><button type="submit" class="secondary">Remove</button></form></td></tr>{% endfor %}
+  </tbody>
+  <tfoot><tr><th colspan="5">Total</th><th>{{ '%.0f'|format(total) }}</th><th></th></tr></tfoot>
+</table>
+<form method="post" action="{{ url_for('m1b.confirm_booking', pref_id=trip.id) }}"><button type="submit">Confirm booking</button></form>
+{% else %}
+<p class="notice warn">Your cart is empty.</p>
+{% endif %}
+<p><a class="btn" href="{{ url_for('search', destination=trip.destination, date=trip.start_date) }}">Find flights and hotels</a></p>
+{% endblock %}

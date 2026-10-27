@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Booking confirmed{% endblock %}
+{% block content %}
+<h1>Booking confirmed</h1>
+<p class="notice ok">Your booking ID is <strong>{{ b.booking_ref }}</strong>. Status: {{ b.status }}.</p>
+<p>{{ trip.destination }}, {{ trip.start_date }} to {{ trip.end_date }}, {{ trip.travelers }} traveler(s).</p>
+<table>
+  <thead><tr><th>Type</th><th>Item</th><th>Details</th><th>Qty</th><th>Line total (Rs.)</th></tr></thead>
+  <tbody>{% for i in items %}<tr><td>{{ i.item_type|capitalize }}</td><td>{{ i.name }}</td><td>{{ i.details }}</td><td>{{ i.quantity }}</td><td>{{ '%.0f'|format(i.line_total) }}</td></tr>{% endfor %}</tbody>
+  <tfoot><tr><th colspan="4">Total paid</th><th>{{ '%.0f'|format(b.total) }}</th></tr></tfoot>
+</table>
+<p><a class="btn" href="{{ url_for('m1b.trips') }}">My trips</a></p>
+{% endblock %}

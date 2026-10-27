@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Matches{% endblock %}
+{% block content %}
+<h1>Companions for your trip to {{ me.destination }}</h1>
+<p>{{ me.start_date }} to {{ me.end_date }}, budget Rs. {{ '%.0f'|format(me.budget) }}.
+<a href="{{ url_for('m2.profile_form', pid=me.id) }}">Edit profile</a></p>
+{% if matches %}
+<table>
+  <thead><tr><th>Traveler</th><th>Age</th><th>Trip</th><th>Score</th><th>Shared interests</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for m in matches %}{% set r = reqs.get(m.id) %}
+  <tr>
+    <td>{{ m.name }}<br><small>{{ m.travel_style }}</small></td><td>{{ m.age }}</td>
+    <td>{{ m.destination }}<br><small>{{ m.start_date }} to {{ m.end_date }}</small></td>
+    <td><span class="score">{{ m.score }}</span></td>
+    <td>{{ m.shared|join(', ') if m.shared else 'None' }}</td>
+    <td>
+      {% if not r %}
+        <form method="post" action="{{ url_for('m2.send_request', receiver_id=m.id) }}" class="inline"><button type="submit">Send request</button></form>
+      {% elif r.status == 'Pending' and r.sender_id == me.id %}Request sent (Pending)
+      {% elif r.status == 'Pending' %}They sent you a request. <a href="{{ url_for('m2.requests_page') }}">Respond</a>
+      {% elif r.status == 'Accepted' %}Connected. <a href="{{ url_for('m2.chat', req_id=r.id) }}">Open chat</a>
+      {% else %}Rejected{% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="notice warn">No matches yet. Other travelers need a trip that overlaps your dates. Create another profile and switch to it to test.</p>
+{% endif %}
+{% endblock %}

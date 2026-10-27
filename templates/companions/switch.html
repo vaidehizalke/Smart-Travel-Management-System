@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Switch traveler{% endblock %}
+{% block content %}
+<h1>Switch traveler</h1>
+<p>This demo has no passwords. Pick which traveler you are acting as, so you can show both sides of a request.</p>
+{% if people %}
+<form method="post" class="card">
+  <label>Traveler
+    <select name="profile_id">{% for p in people %}<option value="{{ p.id }}">{{ p.name }} ({{ p.email }}), trip to {{ p.destination }}</option>{% endfor %}</select></label>
+  <button type="submit">Use this traveler</button>
+</form>
+{% else %}<p class="notice warn">No profiles yet. <a href="{{ url_for('m2.profile_form') }}">Create one</a>.</p>{% endif %}
+<p><a class="btn" href="{{ url_for('m2.profile_form') }}">Create another profile</a></p>
+{% endblock %}

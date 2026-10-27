@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Traveler profile{% endblock %}
+{% block content %}
+<h1>{{ 'Edit your profile' if profile else 'Create your traveler profile' }}</h1>
+{% if errors %}<div class="notice err"><strong>Please fix the following:</strong>
+<ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>{% endif %}
+{% if not trips %}
+<p class="notice warn">Companion matching uses a trip saved in Module 1. <a href="{{ url_for('index') }}">Plan a trip</a> first, then come back.</p>
+{% else %}
+<form method="post" class="card">
+  <div class="row">
+    <label>Name <input type="text" name="name" value="{{ form.get('name','') }}"></label>
+    <label>Email <input type="text" name="email" value="{{ form.get('email','') }}"></label>
+  </div>
+  <div class="row">
+    <label>Age <input type="text" name="age" value="{{ form.get('age','') }}"></label>
+    <label>Travel style
+      <select name="travel_style"><option value="">Choose a style</option>
+      {% for s in styles %}<option {{ 'selected' if form.get('travel_style') == s }}>{{ s }}</option>{% endfor %}</select></label>
+  </div>
+  <fieldset><legend>Interests</legend>
+    {% for i in interests %}<label class="check"><input type="checkbox" name="interests" value="{{ i }}"
+      {{ 'checked' if i in form.get('interests', []) }}> {{ i|capitalize }}</label>{% endfor %}
+  </fieldset>
+  <label>Trip to find companions for (saved in Module 1)
+    <select name="preference_id"><option value="">Choose a trip</option>
+    {% for t in trips %}<option value="{{ t.id }}" {{ 'selected' if form.get('preference_id')|string == t.id|string }}>{{ t.destination }}: {{ t.start_date }} to {{ t.end_date }}, budget Rs. {{ '%.0f'|format(t.budget) }}</option>{% endfor %}
+    </select></label>
+  <button type="submit">{{ 'Save changes' if profile else 'Create profile' }}</button>
+</form>
+{% endif %}
+{% endblock %}

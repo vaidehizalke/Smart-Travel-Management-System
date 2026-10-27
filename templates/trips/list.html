@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}My trips{% endblock %}
+{% block content %}
+<h1>My itineraries</h1>
+{% if trips %}
+<table>
+  <thead><tr><th>Trip</th><th>Dates</th><th>Travelers</th><th>Budget (Rs.)</th><th>Itinerary</th><th>Actions</th></tr></thead>
+  <tbody>
+  {% for t in trips %}<tr>
+    <td>{{ t.destination }}<br><small>Trip {{ t.id }}{% if t.bookings %}, booked{% endif %}</small></td>
+    <td>{{ t.start_date }} to {{ t.end_date }}</td><td>{{ t.travelers }}</td><td>{{ '%.0f'|format(t.budget) }}</td>
+    <td>{% if t.itinerary_id %}{{ t.total_days }} days, est. Rs. {{ '%.0f'|format(t.estimated_cost) }}{% else %}Not generated yet{% endif %}</td>
+    <td>
+      <a href="{{ url_for('itinerary', pref_id=t.id) }}">View</a>
+      {% if not t.bookings %} | <a href="{{ url_for('m1b.edit_trip', pid=t.id) }}">Edit</a>{% endif %}
+      | <a href="{{ url_for('m1b.delete_trip', pid=t.id) }}">Delete</a>
+      | <a href="{{ url_for('m1b.cart', pref_id=t.id) }}">Cart ({{ t.cart_items }})</a>
+    </td></tr>{% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="notice warn">You have no saved trips yet. <a href="{{ url_for('index') }}">Plan a trip</a></p>
+{% endif %}
+{% if bookings %}
+<h2>My bookings</h2>
+<table>
+  <thead><tr><th>Booking ID</th><th>Trip</th><th>Total (Rs.)</th><th>Status</th></tr></thead>
+  <tbody>{% for b in bookings %}<tr><td><a href="{{ url_for('m1b.booking', booking_id=b.id) }}">{{ b.booking_ref }}</a></td><td>{{ b.destination }}</td><td>{{ '%.0f'|format(b.total) }}</td><td>{{ b.status }}</td></tr>{% endfor %}</tbody>
+</table>
+{% endif %}
+{% endblock %}

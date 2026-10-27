@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Chat{% endblock %}
+{% block content %}
+<h1>Chat with {{ other.name }}</h1>
+<div class="chatbox">
+  {% for m in msgs %}<div class="msg {{ 'mine' if m.sender_id == me.id }}"><small>{{ m.name }}, {{ m.created_at }} UTC</small>{{ m.body }}</div>
+  {% else %}<p>No messages yet. Say hello.</p>{% endfor %}
+</div>
+<form method="post" class="card" style="margin-top:14px">
+  <label>Message (up to {{ max_len }} characters)<textarea name="body" rows="3"></textarea></label>
+  <button type="submit">Send message</button>
+</form>
+{% endblock %}
